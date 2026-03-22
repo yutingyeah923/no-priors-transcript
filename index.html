@@ -36,10 +36,10 @@
             min-height: 100vh;
         }
 
-        /* Header */
+        /* Header - Large Title Style */
         .header {
             background: linear-gradient(180deg, var(--np-purple-dark) 0%, var(--np-bg-dark) 100%);
-            padding: 20px;
+            padding: 40px 20px 30px;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -48,70 +48,61 @@
         .header-content {
             max-width: 700px;
             margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            text-align: center;
         }
 
-        .podcast-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--np-purple) 0%, var(--np-purple-light) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .header-info h1 {
-            font-size: 16px;
+        .podcast-brand {
+            font-size: 11px;
             font-weight: 600;
-            margin-bottom: 2px;
-            line-height: 1.3;
+            letter-spacing: 2px;
+            color: var(--np-purple-light);
+            margin-bottom: 16px;
+            text-transform: uppercase;
         }
 
-        .header-info p {
-            font-size: 12px;
+        .header-title-en {
+            font-size: clamp(24px, 6vw, 40px);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title-cn {
+            font-size: clamp(14px, 3.5vw, 20px);
+            font-weight: 500;
             color: var(--np-text-secondary);
+            line-height: 1.5;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        /* Guests Bar */
+        /* Guests Bar - Text Only */
         .guests-bar {
             display: flex;
-            gap: 20px;
-            padding: 12px 20px;
+            gap: 24px;
+            padding: 10px 20px;
             background: var(--np-bg-card);
             border-bottom: 1px solid var(--np-border);
         }
 
         .guest-item {
             display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .guest-avatar-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--np-border);
-        }
-
-        .guest-item.host .guest-avatar-img {
-            border-color: var(--np-purple);
-        }
-
-        .guest-item.guest .guest-avatar-img {
-            border-color: #4ADE80;
+            flex-direction: column;
+            gap: 2px;
         }
 
         .guest-name {
             font-size: 13px;
             font-weight: 600;
+        }
+
+        .guest-item.host .guest-name {
+            color: var(--np-purple-light);
+        }
+
+        .guest-item.guest .guest-name {
+            color: #4ADE80;
         }
 
         .guest-role {
@@ -133,15 +124,15 @@
         .content-container {
             max-width: 700px;
             margin: 0 auto;
-            padding: 12px;
+            padding: 8px;
         }
 
-        /* Section Card - Compact Design */
+        /* Section Card - Ultra Compact */
         .section-card {
             background: var(--np-bg-card);
             border: 1px solid var(--np-border);
-            border-radius: 10px;
-            margin-bottom: 8px;
+            border-radius: 8px;
+            margin-bottom: 4px;
             overflow: hidden;
             transition: all 0.2s ease;
         }
@@ -163,11 +154,11 @@
         .section-header {
             display: flex;
             align-items: center;
-            padding: 10px 14px 6px;
+            padding: 8px 12px 4px;
         }
 
         .section-author {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
         }
 
@@ -181,9 +172,9 @@
 
         /* Section Content */
         .section-content {
-            padding: 0 14px 12px;
+            padding: 0 12px 10px;
             font-size: 15px;
-            line-height: 1.7;
+            line-height: 1.65;
             color: var(--np-text-primary);
             cursor: text;
             user-select: text;
@@ -395,29 +386,21 @@
     <!-- Header -->
     <header class="header">
         <div class="header-content">
-            <div class="podcast-avatar">NP</div>
-            <div class="header-info">
-                <h1>Coding Is Now a Skill Issue</h1>
-                <p>Andrej Karpathy on Agents & AI Psychosis</p>
-            </div>
+            <div class="podcast-brand">No Priors Podcast</div>
+            <div class="header-title-en">Coding Is Now a Skill Issue</div>
+            <div class="header-title-cn">编程已变成技术活儿：Andrej Karpathy 谈 AI 代理与 AI 亢奋</div>
         </div>
     </header>
 
     <!-- Guests Bar -->
     <div class="guests-bar">
         <div class="guest-item host">
-            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face" alt="Sarah Guo" class="guest-avatar-img" id="sarah-avatar">
-            <div>
-                <div class="guest-name">Sarah Guo</div>
-                <div class="guest-role">Host</div>
-            </div>
+            <div class="guest-name">Sarah Guo</div>
+            <div class="guest-role">主持人</div>
         </div>
         <div class="guest-item guest">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face" alt="Andrej Karpathy" class="guest-avatar-img" id="andrej-avatar">
-            <div>
-                <div class="guest-name">Andrej Karpathy</div>
-                <div class="guest-role">Guest</div>
-            </div>
+            <div class="guest-name">Andrej Karpathy</div>
+            <div class="guest-role">嘉宾</div>
         </div>
     </div>
 
