@@ -81,8 +81,8 @@
         /* Guests Bar */
         .guests-bar {
             display: flex;
-            gap: 24px;
-            padding: 16px 20px;
+            gap: 20px;
+            padding: 12px 20px;
             background: var(--np-bg-card);
             border-bottom: 1px solid var(--np-border);
         }
@@ -90,12 +90,12 @@
         .guest-item {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .guest-avatar-img {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--np-border);
@@ -110,12 +110,12 @@
         }
 
         .guest-name {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
 
         .guest-role {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--np-text-muted);
         }
 
@@ -133,15 +133,15 @@
         .content-container {
             max-width: 700px;
             margin: 0 auto;
-            padding: 16px;
+            padding: 12px;
         }
 
         /* Section Card - Compact Design */
         .section-card {
             background: var(--np-bg-card);
             border: 1px solid var(--np-border);
-            border-radius: 12px;
-            margin-bottom: 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
             overflow: hidden;
             transition: all 0.2s ease;
         }
@@ -159,21 +159,11 @@
             border: 2px solid var(--np-purple-light);
         }
 
-        /* Section Header */
+        /* Section Header - Minimal */
         .section-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: rgba(255,255,255,0.02);
-            border-bottom: 1px solid var(--np-border);
-        }
-
-        .section-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
+            padding: 10px 14px 6px;
         }
 
         .section-author {
@@ -189,27 +179,11 @@
             color: #4ADE80;
         }
 
-        .section-badge {
-            margin-left: auto;
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 10px;
-            background: rgba(124, 92, 255, 0.2);
-            color: var(--np-purple-light);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .section-card.guest .section-badge {
-            background: rgba(74, 222, 128, 0.2);
-            color: #4ADE80;
-        }
-
         /* Section Content */
         .section-content {
-            padding: 14px 16px;
+            padding: 0 14px 12px;
             font-size: 15px;
-            line-height: 1.8;
+            line-height: 1.7;
             color: var(--np-text-primary);
             cursor: text;
             user-select: text;
@@ -432,17 +406,17 @@
     <!-- Guests Bar -->
     <div class="guests-bar">
         <div class="guest-item host">
-            <img src="https://i.imgur.com/SarahGuo.jpg" alt="Sarah Guo" class="guest-avatar-img" id="sarah-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Sarah+Guo&background=7C5CFF&color=fff'">
+            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face" alt="Sarah Guo" class="guest-avatar-img" id="sarah-avatar">
             <div>
                 <div class="guest-name">Sarah Guo</div>
-                <div class="guest-role">Host, No Priors</div>
+                <div class="guest-role">Host</div>
             </div>
         </div>
         <div class="guest-item guest">
-            <img src="https://i.imgur.com/AndrejKarpathy.jpg" alt="Andrej Karpathy" class="guest-avatar-img" id="andrej-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Andrej+Karpathy&background=4ADE80&color=fff'">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face" alt="Andrej Karpathy" class="guest-avatar-img" id="andrej-avatar">
             <div>
                 <div class="guest-name">Andrej Karpathy</div>
-                <div class="guest-role">AI Researcher</div>
+                <div class="guest-role">Guest</div>
             </div>
         </div>
     </div>
@@ -522,19 +496,12 @@
         // Render sections
         function renderSections() {
             const container = document.getElementById('content-container');
-            const sarahAvatar = document.getElementById('sarah-avatar').src;
-            const andrejAvatar = document.getElementById('andrej-avatar').src;
 
             container.innerHTML = transcriptData.map(section => {
-                const avatar = section.speaker === 'host' ? sarahAvatar : andrejAvatar;
-                const badge = section.speaker === 'host' ? 'Host' : 'Guest';
-
                 return `
                     <div class="section-card ${section.speaker}" data-id="${section.id}" id="card-${section.id}">
                         <div class="section-header">
-                            <img src="${avatar}" class="section-avatar" alt="${section.author}">
                             <span class="section-author">${section.author}</span>
-                            <span class="section-badge">${badge}</span>
                         </div>
                         <div class="section-content" id="content-${section.id}"
                              onmouseup="handleSelection(${section.id})"
