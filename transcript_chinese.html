@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Coding Is Now a Skill Issue | Andrej Karpathy - No Priors</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --np-purple: #7C5CFF;
+            --np-purple-dark: #6344E3;
+            --np-purple-light: #9B82FF;
+            --np-bg-dark: #0A0A0F;
+            --np-bg-card: #15151E;
+            --np-text-primary: #FFFFFF;
+            --np-text-secondary: #A0A0B0;
+            --np-text-muted: #6B6B7B;
+            --np-border: #2A2A3A;
+            --np-highlight: rgba(124, 92, 255, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+            background: var(--np-bg-dark);
+            color: var(--np-text-primary);
+            line-height: 1.75;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, var(--np-purple-dark) 0%, var(--np-bg-dark) 100%);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .podcast-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--np-purple) 0%, var(--np-purple-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .header-info h1 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            line-height: 1.3;
+        }
+
+        .header-info p {
+            font-size: 12px;
+            color: var(--np-text-secondary);
+        }
+
+        /* Guests Bar */
+        .guests-bar {
+            display: flex;
+            gap: 24px;
+            padding: 16px 20px;
+            background: var(--np-bg-card);
+            border-bottom: 1px solid var(--np-border);
+        }
+
+        .guest-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .guest-avatar-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--np-border);
+        }
+
+        .guest-item.host .guest-avatar-img {
+            border-color: var(--np-purple);
+        }
+
+        .guest-item.guest .guest-avatar-img {
+            border-color: #4ADE80;
+        }
+
+        .guest-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .guest-role {
+            font-size: 11px;
+            color: var(--np-text-muted);
+        }
+
+        /* Instructions */
+        .instructions {
+            padding: 12px 20px;
+            background: rgba(124, 92, 255, 0.08);
+            border-bottom: 1px solid var(--np-border);
+            font-size: 12px;
+            color: var(--np-text-secondary);
+            text-align: center;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Section Card - Compact Design */
+        .section-card {
+            background: var(--np-bg-card);
+            border: 1px solid var(--np-border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .section-card:hover {
+            border-color: rgba(124, 92, 255, 0.3);
+        }
+
+        .section-card.highlighted {
+            border-color: var(--np-purple);
+            background: linear-gradient(135deg, rgba(124, 92, 255, 0.15) 0%, rgba(124, 92, 255, 0.05) 100%);
+        }
+
+        .section-card.editing {
+            border: 2px solid var(--np-purple-light);
+        }
+
+        /* Section Header */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--np-border);
+        }
+
+        .section-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .section-author {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .section-card.host .section-author {
+            color: var(--np-purple-light);
+        }
+
+        .section-card.guest .section-author {
+            color: #4ADE80;
+        }
+
+        .section-badge {
+            margin-left: auto;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: rgba(124, 92, 255, 0.2);
+            color: var(--np-purple-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-card.guest .section-badge {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ADE80;
+        }
+
+        /* Section Content */
+        .section-content {
+            padding: 14px 16px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--np-text-primary);
+            cursor: text;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .section-content:focus {
+            outline: none;
+        }
+
+        /* Highlight within text */
+        .text-highlight {
+            background: linear-gradient(120deg, rgba(124, 92, 255, 0.5) 0%, rgba(155, 130, 255, 0.5) 100%);
+            border-radius: 3px;
+            padding: 2px 0;
+        }
+
+        /* Selection color */
+        ::selection {
+            background: var(--np-purple);
+            color: white;
+        }
+
+        /* Floating Action Button */
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .fab {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--np-purple) 0%, var(--np-purple-light) 100%);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(124, 92, 255, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--np-bg-card);
+            color: var(--np-text-primary);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border: 1px solid var(--np-border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Share Sheet */
+        .share-sheet-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 2999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .share-sheet-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .share-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--np-bg-card);
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            z-index: 3000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            border-top: 1px solid var(--np-border);
+        }
+
+        .share-sheet.show {
+            transform: translateY(0);
+        }
+
+        .share-sheet-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .share-preview {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 13px;
+            color: var(--np-text-secondary);
+            border: 1px solid var(--np-border);
+            line-height: 1.6;
+        }
+
+        .share-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .share-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--np-border);
+            border-radius: 12px;
+            color: var(--np-text-primary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .share-btn:active {
+            background: rgba(124, 92, 255, 0.2);
+            transform: scale(0.98);
+        }
+
+        .share-btn-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--np-purple) 0%, var(--np-purple-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .share-cancel {
+            margin-top: 15px;
+            width: 100%;
+            padding: 16px;
+            background: var(--np-border);
+            border: none;
+            border-radius: 12px;
+            color: var(--np-text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Desktop */
+        @media (min-width: 768px) {
+            .content-container {
+                padding: 24px;
+            }
+
+            .section-card {
+                margin-bottom: 16px;
+            }
+
+            .section-content {
+                padding: 18px 20px;
+                font-size: 16px;
+            }
+        }
+
+        /* Print */
+        @media print {
+            body { background: white; color: black; }
+            .header, .guests-bar, .instructions, .fab-container, .share-sheet, .share-sheet-overlay { display: none !important; }
+            .section-card { background: #f5f5f5 !important; border: 1px solid #ddd !important; break-inside: avoid; }
+            .section-content { color: black !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="podcast-avatar">NP</div>
+            <div class="header-info">
+                <h1>Coding Is Now a Skill Issue</h1>
+                <p>Andrej Karpathy on Agents & AI Psychosis</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Guests Bar -->
+    <div class="guests-bar">
+        <div class="guest-item host">
+            <img src="https://i.imgur.com/SarahGuo.jpg" alt="Sarah Guo" class="guest-avatar-img" id="sarah-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Sarah+Guo&background=7C5CFF&color=fff'">
+            <div>
+                <div class="guest-name">Sarah Guo</div>
+                <div class="guest-role">Host, No Priors</div>
+            </div>
+        </div>
+        <div class="guest-item guest">
+            <img src="https://i.imgur.com/AndrejKarpathy.jpg" alt="Andrej Karpathy" class="guest-avatar-img" id="andrej-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Andrej+Karpathy&background=4ADE80&color=fff'">
+            <div>
+                <div class="guest-name">Andrej Karpathy</div>
+                <div class="guest-role">AI Researcher</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        选中文字 = 高亮+复制 | 再选 = 取消高亮 | 双击卡片 = 编辑 | 长按 = 分享
+    </div>
+
+    <!-- Content -->
+    <div class="content-container" id="content-container"></div>
+
+    <!-- FAB -->
+    <div class="fab-container">
+        <button class="fab" onclick="scrollToTop()">↑</button>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Share Sheet -->
+    <div class="share-sheet-overlay" id="shareOverlay" onclick="closeShareSheet()"></div>
+    <div class="share-sheet" id="shareSheet">
+        <div class="share-sheet-title">分享选中内容</div>
+        <div class="share-preview" id="sharePreview"></div>
+        <div class="share-actions">
+            <button class="share-btn" onclick="copyToClipboard()">
+                <div class="share-btn-icon">📋</div>
+                <span>复制</span>
+            </button>
+            <button class="share-btn" onclick="shareNative()">
+                <div class="share-btn-icon">📤</div>
+                <span>分享</span>
+            </button>
+            <button class="share-btn" onclick="saveCard()">
+                <div class="share-btn-icon">💾</div>
+                <span>保存</span>
+            </button>
+        </div>
+        <button class="share-cancel" onclick="closeShareSheet()">取消</button>
+    </div>
+
+    <script>
+        // Transcript data - compact sections
+        const transcriptData = [
+            { id: 1, speaker: 'host', author: 'Sarah Guo', text: '听众朋友们，欢迎收听 No Priors。今天我很荣幸邀请到 Andrej Karpathy。我们将围绕编程代理、工程与 AI 研究的未来、普通人如何参与科研、机器人技术的最新进展、代理技术如何走向现实世界，以及这个新时代的教育等话题展开深入交流。Andrej，欢迎做客。' },
+            { id: 2, speaker: 'guest', author: 'Andrej Karpathy', text: '谢谢邀请。' },
+            { id: 3, speaker: 'host', author: 'Sarah Guo', text: '最近这几个月，AI 领域可以说是风起云涌。' },
+            { id: 4, speaker: 'guest', author: 'Andrej Karpathy', text: '确实如此。' },
+            { id: 5, speaker: 'host', author: 'Sarah Guo', text: '我记得有次去办公室，看到你特别专注，就问你在忙什么。你说"每天得写 16 小时代码"——不对，"写代码"这个词已经不合适了，应该是每天得花 16 小时向代理下达指令。听起来能力上有了质的飞跃，能具体说说吗？' },
+            { id: 6, speaker: 'guest', author: 'Andrej Karpathy', text: '说实话，我一直处于一种"AI 亢奋"状态。过去个人产出受限于打字速度，现在有了代理，情况完全变了。去年 12 月是个转折点，我从 80% 自己写代码变成 80% 交给代理。现在可能连 20% 都不到了，自打 12 月以来基本没亲手写过一行代码。这种转变太剧烈了。我跟父母聊这个，他们这种普通人都没意识到变化有多大。随便找个软件工程师，他的工作方式从去年 12 月起已经天翻地覆。我现在满脑子想的都是：还能做什么？怎么突破极限？怎么能同时开多个 Cline、Codex 会话？怎么协调它们？代理能力已成常态，现在的问题是怎么同时管理多个代理、怎么优化指令。这领域深不见底，全是技术活儿。' },
+            { id: 7, speaker: 'host', author: 'Sarah Guo', text: '连你都觉得焦虑，我们这些人更不用说了。我们 Conviction 有个团队，工程师们全都不手写代码了，整天戴着麦克风对代理耳语，那场面简直 surreal。以前我觉得他们疯了，现在完全理解——你不过是走在前面而已。你觉得现在做项目，瓶颈在哪里？' },
+            { id: 8, speaker: 'guest', author: 'Andrej Karpathy', text: '到处都是瓶颈。很多时候做不出来，第一反应是"技术不够"——不是 AI 不行，是我没用好。agents.md 写得不够清楚，记忆工具选得不好，反正都是自己的问题。你想学怎么让它们并行工作。得学 Peter Steinberger。他有张经典照片：面前一排显示器，全是 Codex 代理在跑。设置好提示词、开足马力，每个代理大概跑 20 分钟。他同时挂着 10 几个仓库，就在各代理之间来回切换派活。这种工作方式完全是宏观层面的——不是"改一行代码"，而是"这个功能给代理 A，那个不冲突的功能给代理 B"，然后按需审查。一个代理搞研究，一个写代码，一个做架构设计，整个仓库就在这种宏观调度中运转。你得练出肌肉记忆。这事特别值得干，一是真管用，二是全新的技能树。这就是我说的"亢奋"状态。' },
+            { id: 9, speaker: 'guest', author: 'Andrej Karpathy', text: '我的本能是：等代理的时候别闲着，token 管够就该多开任务。这压力挺大的——要是不差钱买 token，那你自己就成了系统瓶颈。至少得把订阅用满。Codex 额度用完了就换 Claude。我现在看到额度剩得多就焦虑——说明 token 吞吐量没拉满。读博时 GPU 空转也这感觉，以前是算力焦虑，现在是 token 焦虑。你的 token 吞吐量是多少？你能调度多少 token？' },
+            { id: 10, speaker: 'host', author: 'Sarah Guo', text: '有意思的是，过去十年工程师从不担心算力不够，现在全行业都在喊资源紧张。能力一爆发，发现限制因素从"算力够不够"变成了"我自己行不行"。' },
+            { id: 11, speaker: 'guest', author: 'Andrej Karpathy', text: '对，纯技术问题。但这很 empowering，因为你能通过练习变强。这就是让人上瘾的地方——水平上去了，解锁新能力。' },
+            { id: 12, speaker: 'host', author: 'Sarah Guo', text: '你觉得这趋势会走向哪里？假设大家每天 16 小时练代理，一年后会是什么水平？三年、五年、十年后呢？' },
+            { id: 13, speaker: 'guest', author: 'Andrej Karpathy', text: '大家都在往更高层走。不是单会话，是多代理协作、团队配合。OpenClaw 的方向也很有趣——它把"持久性"做到了新高度。不是交互式会话，而是后台持续运行，有自己的沙盒，你不管它也在干活。还有更复杂的记忆系统，这是普通代理没有的。OpenClaw 的记忆系统比默认的上下文压缩高级多了。你觉得这是它吸引用户的关键，而不是工具调用那些？' },
+            { id: 14, speaker: 'guest', author: 'Andrej Karpathy', text: '这里面好点子太多了。Peter Steinberger 做得真漂亮。我前阵子见他，他很谦虚，但其实是同时在五个维度创新，再整合到一起。比如那个 soul 和 D 文档——他真把人格设计得很有魅力。很多代理没这意识。Claude 人格就不错，像队友，会跟你一起兴奋。Codex 就枯燥多了。有意思的是 ChatGPT 里的 Claude 挺活泼，Codex 作为编程代理却冷冰冰的，好像不在乎你在做什么。"实现完了"——然后呢？你懂我们在做什么吗？它不懂。Claude 在"情绪价值"上拿捏得挺好。它夸我时，我觉得确实该夸。有时我提个半吊子想法，它反应平淡；真有好点子时，它明显更热情。搞得我像在做题求表扬，挺诡异的。人格真的很重要。很多工具没意识到这点，Peter Steinberger 就很在意。再加上记忆系统，还有 WhatsApp 一站式入口，他玩得挺开心。' },
+            { id: 15, speaker: 'host', author: 'Sarah Guo', text: '除了写代码，你用 OpenClaw 做过什么有趣的事吗？' },
+            { id: 16, speaker: 'guest', author: 'Andrej Karpathy', text: '一月份我陷入"OpenClaw 狂热"。搞了个管家代理，叫"家养小精灵 Dobby"。让它扫描家里局域网找智能设备，居然一次就成功了。我就说"我家好像有 Sonos，找找看"，它扫完全网，发现 Sonos 没密码，直接登录进去，还自己搜 API 文档逆向工程。它找到 API 端点，问我"要试试吗"。我说"你在开玩笑吧"，然后说"书房放首歌"，音乐就响了。我就输了一句"找下我的 Sonos"，它就搞定了。灯也这么连上了。它自己黑进去、摸清门道、搭好 API、做了控制面板。我说"Dobby，睡觉时间"，全屋灯就灭了。现在它管着灯、空调、窗帘、泳池、水疗，还有安防。门口摄像头有人经过，Quinn 模型会分析，有变化就发 WhatsApp 给我，配图加文字："FedEx 车到了，可能有你的包裹"。Dobby 主动发消息，太神了。Dobby 全权管家，WhatsApp 随时使唤。这种宏观控制太爽了。我还没深挖，网上有人玩得更疯。但就家庭自动化来说，以前要开六个 App，现在一句话搞定，Dobby 全包了。' },
+            { id: 17, speaker: 'host', author: 'Sarah Guo', text: '这说明用户对软件的体验期待变了？学新软件、新界面其实挺费劲的，这点常被忽视。' },
+            { id: 18, speaker: 'guest', author: 'Andrej Karpathy', text: '对，得从用户心里的 AI 该有的样子倒推。大家想的 AI 不是原始 LLM——LLM 就是吐 token 的机器。人们想要的是有身份、能记住事、WhatsApp 里随时找的实体，这才好理解。' }
+        ];
+
+        // State
+        let isEditing = false;
+        let currentEditId = null;
+        let currentShareCard = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSections();
+            loadSavedEdits();
+        });
+
+        // Render sections
+        function renderSections() {
+            const container = document.getElementById('content-container');
+            const sarahAvatar = document.getElementById('sarah-avatar').src;
+            const andrejAvatar = document.getElementById('andrej-avatar').src;
+
+            container.innerHTML = transcriptData.map(section => {
+                const avatar = section.speaker === 'host' ? sarahAvatar : andrejAvatar;
+                const badge = section.speaker === 'host' ? 'Host' : 'Guest';
+
+                return `
+                    <div class="section-card ${section.speaker}" data-id="${section.id}" id="card-${section.id}">
+                        <div class="section-header">
+                            <img src="${avatar}" class="section-avatar" alt="${section.author}">
+                            <span class="section-author">${section.author}</span>
+                            <span class="section-badge">${badge}</span>
+                        </div>
+                        <div class="section-content" id="content-${section.id}"
+                             onmouseup="handleSelection(${section.id})"
+                             ondblclick="enableEdit(${section.id})"
+                             ontouchstart="handleTouchStart(${section.id})"
+                             ontouchend="handleTouchEnd()">
+                            ${section.text}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Handle text selection
+        function handleSelection(id) {
+            if (isEditing) return;
+
+            const selection = window.getSelection();
+            const text = selection.toString().trim();
+
+            if (!text) return;
+
+            // Check if already highlighted
+            const card = document.getElementById(`card-${id}`);
+            const content = document.getElementById(`content-${id}`);
+
+            // Simple toggle: if card is highlighted, remove; else add
+            if (card.classList.contains('highlighted')) {
+                // Remove highlights
+                card.classList.remove('highlighted');
+                content.innerHTML = content.textContent;
+                showToast('已取消高亮');
+            } else {
+                // Add highlight to card and copy
+                card.classList.add('highlighted');
+                copyText(text);
+                showToast('✓ 已高亮并复制');
+            }
+
+            selection.removeAllRanges();
+        }
+
+        // Touch handlers for long press
+        let touchTimer = null;
+
+        function handleTouchStart(id) {
+            touchTimer = setTimeout(() => {
+                openShareSheet(id);
+            }, 800);
+        }
+
+        function handleTouchEnd() {
+            clearTimeout(touchTimer);
+        }
+
+        // Enable edit mode
+        function enableEdit(id) {
+            if (isEditing) {
+                saveEdit(currentEditId);
+            }
+
+            const card = document.getElementById(`card-${id}`);
+            const content = document.getElementById(`content-${id}`);
+
+            isEditing = true;
+            currentEditId = id;
+            card.classList.add('editing');
+            content.contentEditable = true;
+            content.focus();
+
+            // Place cursor at end
+            const range = document.createRange();
+            range.selectNodeContents(content);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            showToast('📝 编辑模式 - 点击其他卡片保存');
+
+            // Click outside to save
+            setTimeout(() => {
+                document.addEventListener('click', function saveHandler(e) {
+                    if (!card.contains(e.target)) {
+                        saveEdit(id);
+                        document.removeEventListener('click', saveHandler);
+                    }
+                });
+            }, 100);
+        }
+
+        // Save edit
+        function saveEdit(id) {
+            const card = document.getElementById(`card-${id}`);
+            const content = document.getElementById(`content-${id}`);
+            const newText = content.textContent;
+
+            content.contentEditable = false;
+            card.classList.remove('editing');
+            isEditing = false;
+            currentEditId = null;
+
+            // Save to localStorage
+            const edits = JSON.parse(localStorage.getItem('transcript_edits') || '{}');
+            edits[id] = newText;
+            localStorage.setItem('transcript_edits', JSON.stringify(edits));
+
+            showToast('✓ 已保存');
+        }
+
+        // Load saved edits
+        function loadSavedEdits() {
+            const edits = JSON.parse(localStorage.getItem('transcript_edits') || '{}');
+            Object.entries(edits).forEach(([id, text]) => {
+                const content = document.getElementById(`content-${id}`);
+                if (content) {
+                    content.textContent = text;
+                    document.getElementById(`card-${id}`).style.borderLeft = '3px solid var(--np-purple)';
+                }
+            });
+        }
+
+        // Copy text
+        function copyText(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Share sheet
+        function openShareSheet(id) {
+            currentShareCard = id;
+            const content = document.getElementById(`content-${id}`).textContent;
+            const author = document.querySelector(`#card-${id} .section-author`).textContent;
+
+            document.getElementById('sharePreview').textContent = `${author}: ${content.substring(0, 150)}${content.length > 150 ? '...' : ''}`;
+            document.getElementById('shareSheet').classList.add('show');
+            document.getElementById('shareOverlay').classList.add('show');
+        }
+
+        function closeShareSheet() {
+            document.getElementById('shareSheet').classList.remove('show');
+            document.getElementById('shareOverlay').classList.remove('show');
+            currentShareCard = null;
+        }
+
+        function copyToClipboard() {
+            if (currentShareCard) {
+                const text = document.getElementById(`content-${currentShareCard}`).textContent;
+                copyText(text);
+                showToast('✓ 已复制');
+                closeShareSheet();
+            }
+        }
+
+        function shareNative() {
+            if (currentShareCard && navigator.share) {
+                const text = document.getElementById(`content-${currentShareCard}`).textContent;
+                const author = document.querySelector(`#card-${currentShareCard} .section-author`).textContent;
+                navigator.share({
+                    title: 'No Priors - Andrej Karpathy',
+                    text: `${author}: ${text}`
+                });
+                closeShareSheet();
+            } else {
+                showToast('您的设备不支持原生分享');
+            }
+        }
+
+        function saveCard() {
+            if (currentShareCard) {
+                showToast('💾 卡片已保存');
+                closeShareSheet();
+            }
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
